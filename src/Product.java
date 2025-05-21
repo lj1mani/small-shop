@@ -1,3 +1,4 @@
+import java.text.DecimalFormat;
 
 class Product {
 
@@ -61,6 +62,7 @@ class Product {
 
     @Override
     public String toString() {
-        return name + " | Quantity: " + quantity + " | Price: $" + price;
+        DecimalFormat df = new DecimalFormat("0.00");
+        return name + " | Quantity: " + quantity + " | Price: $" + df.format(price);
     }
 }

@@ -1,6 +1,7 @@
 import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.text.DecimalFormat;
 
 // GUI class to handle adding, viewing, updating, and deleting products using dialogs
 public class ProductGUI {
@@ -104,9 +105,10 @@ public class ProductGUI {
 
         // 2. Populate dropdown
         String[] productOptions = new String[productList.size()];
+        DecimalFormat df = new DecimalFormat("0.00");
         for (int i = 0; i < productList.size(); i++) {
             Product p = productList.get(i);
-            productOptions[i] = "ID: " + p.getId() + " | " + p.getName() + " | Qty: " + p.getQuantity() + " | $" + p.getPrice();
+            productOptions[i] = "ID: " + p.getId() + " | " + p.getName() + " | Qty: " + p.getQuantity() + " | $" + df.format(p.getPrice());
         }
 
         // 3. Create scrollable combo box
@@ -176,10 +178,11 @@ public class ProductGUI {
         }
 
         // 2. Create dropdown list
+        DecimalFormat df = new DecimalFormat("0.00");
         String[] productOptions = new String[productList.size()];
         for (int i = 0; i < productList.size(); i++) {
             Product p = productList.get(i);
-            productOptions[i] = "ID: " + p.getId() + " | " + p.getName() + " | Qty: " + p.getQuantity() + " | $" + p.getPrice();
+            productOptions[i] = "ID: " + p.getId() + " | " + p.getName() + " | Qty: " + p.getQuantity() + " | $" + df.format(p.getPrice());
         }
 
         JComboBox<String> comboBox = new JComboBox<>(productOptions);
