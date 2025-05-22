@@ -259,7 +259,14 @@ public class ProductGUI {
 
         // 1. Load all products from the database
         List<Product> productList = databaseManager.getAllProducts();
+
+        if (productList.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "No products.");
+            return;
+        }
+
         List<Product> lowStockList = new ArrayList<>(); // List to store low stock products
+
 
         int threshold = 5; // Define the minimum stock threshold
 
@@ -296,5 +303,29 @@ public class ProductGUI {
         JOptionPane.showMessageDialog(null, scrollPane, "Low Stock Alert", JOptionPane.WARNING_MESSAGE);
     }
 
+
+    public void showTotalInventoryValue(){
+        DatabaseManager databaseManager = new DatabaseManager();
+        databaseManager.connect();
+
+        // 1. Load all products from the database
+        List<Product> productList = databaseManager.getAllProducts();
+
+        if (productList.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "No products.");
+            return;
+        }
+
+        double totalCost = 0;
+
+        for (Product p : productList){
+            totalCost += p.getQuantity() * p.getPrice();
+        }
+
+        JOptionPane.showMessageDialog(null, "Total cost is: $" + totalCost);
+
+
+
+    }
 
 }

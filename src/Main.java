@@ -7,7 +7,7 @@ public class Main {
         ProductGUI productGUI = new ProductGUI();
 
         // Menu options for the user to choose from
-        String[] options = {"Add product", "Show all products", "Update product", "Delete product", "Search product", "Check low stock", "Exit"};
+        String[] options = {"Add product", "Show all products", "Update product", "Delete product", "Search product", "Check low stock", "Total cost"};
 
         // Infinite loop to keep showing the menu until user chooses "Exit"
         while (true) {
@@ -24,8 +24,8 @@ public class Main {
                     options[0]                  // Default selected option
             );
 
-            // If user closes the dialog (choice == -1) or clicks "Exit" (choice == 6), exit the loop
-            if (choice == -1 || choice == 6) {
+            // If user closes the dialog
+            if (choice == -1) {
                 JOptionPane.showMessageDialog(null, "Goodbye!"); // Say goodbye
                 break;
             }
@@ -57,6 +57,7 @@ public class Main {
                     break;
 
                 case 6:
+                    productGUI.showTotalInventoryValue();
                     break;
 
                 default:
