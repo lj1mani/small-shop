@@ -10,6 +10,7 @@ This is a simple **Java desktop application** for managing inventory in a small 
 - Delete products
 - Data stored locally using SQLite
 - Search for a product by name and view its full details
+- Shows low stock for product witch quantity is under 5
 
 ## Technologies Used
 

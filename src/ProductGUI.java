@@ -250,4 +250,51 @@ public class ProductGUI {
             JOptionPane.showMessageDialog(null, "No product found with that name.");
         }
     }
+
+    // Method to show products that are below the low stock threshold
+    public void showLowStockProducts() {
+        // Connect to the database
+        DatabaseManager databaseManager = new DatabaseManager();
+        databaseManager.connect();
+
+        // 1. Load all products from the database
+        List<Product> productList = databaseManager.getAllProducts();
+        List<Product> lowStockList = new ArrayList<>(); // List to store low stock products
+
+        int threshold = 5; // Define the minimum stock threshold
+
+        // 2. Filter products that have quantity below the threshold
+        for (Product p : productList) {
+            if (p.getQuantity() < threshold) {
+                lowStockList.add(p);
+            }
+        }
+
+        // 3. If no low stock products found, show message and return
+        if (lowStockList.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "No low stock products.");
+            return;
+        }
+
+        // 4. Build a string to display the low stock product list
+        StringBuilder result = new StringBuilder("Low Stock Products (Below " + threshold + "):\n\n");
+        for (Product p : lowStockList) {
+            result.append(p.getName())
+                    .append(" | Quantity: ").append(p.getQuantity())
+                    .append("\n");
+        }
+
+        // 5. Display the result in a scrollable
+        JTextArea textArea = new JTextArea(result.toString());
+        textArea.setEditable(false);
+        textArea.setFont(new java.awt.Font("Arial", java.awt.Font.PLAIN, 15));
+
+        JScrollPane scrollPane = new JScrollPane(textArea);
+        scrollPane.setPreferredSize(new java.awt.Dimension(400, 300));
+
+        // 6. Show the final message dialog with the low stock alert
+        JOptionPane.showMessageDialog(null, scrollPane, "Low Stock Alert", JOptionPane.WARNING_MESSAGE);
+    }
+
+
 }
