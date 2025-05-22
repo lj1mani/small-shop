@@ -9,6 +9,7 @@ This is a simple **Java desktop application** for managing inventory in a small 
 - Update product details
 - Delete products
 - Data stored locally using SQLite
+- Search for a product by name and view its full details
 
 ## Technologies Used
 

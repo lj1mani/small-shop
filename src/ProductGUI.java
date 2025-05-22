@@ -211,4 +211,43 @@ public class ProductGUI {
             JOptionPane.showMessageDialog(null, "Deletion cancelled.");
         }
     }
+
+    public void searchProductWithGUI() {
+        DatabaseManager databaseManager = new DatabaseManager();
+        databaseManager.connect();
+
+        // 1. Load products
+        List<Product> productList = databaseManager.getAllProducts();
+        if (productList.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "No products to search.");
+            return;
+        }
+
+        // 2. Ask for product name
+        String productName = JOptionPane.showInputDialog("Search for product name:");
+        if (productName == null || productName.trim().isEmpty()) {
+            return;
+        }
+
+        // 3. Search for matching products (case-insensitive)
+        boolean found = false;
+        StringBuilder result = new StringBuilder();
+        for (Product p : productList) {
+            if (p.getName().equalsIgnoreCase(productName.trim())) {
+                result.append("ID: ").append(p.getId())
+                        .append("\nName: ").append(p.getName())
+                        .append("\nQuantity: ").append(p.getQuantity())
+                        .append("\nPrice: $").append(String.format("%.2f", p.getPrice()))
+                        .append("\n\n");
+                found = true;
+            }
+        }
+
+        // 4. Show result or not found message
+        if (found) {
+            JOptionPane.showMessageDialog(null, result.toString(), "Search Result", JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(null, "No product found with that name.");
+        }
+    }
 }
