@@ -37,7 +37,7 @@ public class Main {
                     break;
 
                 case 1:
-                    productGUI.showAllProductWithGUI();
+                    productGUI.showAllProductWithGUI(); 
                     break;
 
                 case 2:
