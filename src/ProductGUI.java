@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.text.DecimalFormat;
+import java.awt.*;
 
 // GUI class to handle adding, viewing, updating, and deleting products using dialogs
 public class ProductGUI {
@@ -96,14 +97,14 @@ public class ProductGUI {
         DatabaseManager databaseManager = new DatabaseManager();
         databaseManager.connect();
 
-        // 1. Load all products
+        // Load all products
         List<Product> productList = databaseManager.getAllProducts();
         if (productList.isEmpty()) {
             JOptionPane.showMessageDialog(null, "No products to update.");
             return;
         }
 
-        // 2. Populate dropdown
+        // Build options
         String[] productOptions = new String[productList.size()];
         DecimalFormat df = new DecimalFormat("0.00");
         for (int i = 0; i < productList.size(); i++) {
@@ -111,52 +112,70 @@ public class ProductGUI {
             productOptions[i] = "ID: " + p.getId() + " | " + p.getName() + " | Qty: " + p.getQuantity() + " | $" + df.format(p.getPrice());
         }
 
-        // 3. Create scrollable combo box
+        // ComboBox to select product
         JComboBox<String> comboBox = new JComboBox<>(productOptions);
-        comboBox.setPreferredSize(new java.awt.Dimension(350, 25));
+        comboBox.setPreferredSize(new Dimension(400, 25));
         JScrollPane scrollPane = new JScrollPane(comboBox);
-        scrollPane.setPreferredSize(new java.awt.Dimension(380, 70));
-
+        scrollPane.setPreferredSize(new Dimension(420, 70));
         int option = JOptionPane.showConfirmDialog(null, scrollPane, "Select Product to Update", JOptionPane.OK_CANCEL_OPTION);
         if (option != JOptionPane.OK_OPTION) return;
 
-        // 4. Get selected product
         int selectedIndex = comboBox.getSelectedIndex();
         Product selectedProduct = productList.get(selectedIndex);
 
-        // 5. Ask for new name
-        String newName = JOptionPane.showInputDialog("Enter new product name:", selectedProduct.getName());
-        if (newName == null || newName.trim().isEmpty()) return;
+        // Input fields
+        JTextField nameField = new JTextField(selectedProduct.getName(), 20);
+        JTextField quantityField = new JTextField(String.valueOf(selectedProduct.getQuantity()), 5);
+        JTextField priceField = new JTextField(df.format(selectedProduct.getPrice()), 7);
 
-        // 6. Ask for new quantity
+        JPanel panel = new JPanel(new GridLayout(3, 2, 10, 10));
+        panel.add(new JLabel("Product Name:"));
+        panel.add(nameField);
+        panel.add(new JLabel("Quantity:"));
+        panel.add(quantityField);
+        panel.add(new JLabel("Price (e.g. 2.50):"));
+        panel.add(priceField);
+
+        int result = JOptionPane.showConfirmDialog(null, panel, "Update Product Details", JOptionPane.OK_CANCEL_OPTION);
+        if (result != JOptionPane.OK_OPTION) return;
+
+        // Read inputs
+        String newName = nameField.getText().trim();
+        String quantityStr = quantityField.getText().trim();
+        String priceStr = priceField.getText().trim().replace(",", "."); // fix locale
+
+        // Input validation
+        if (newName.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Product name cannot be empty.");
+            return;
+        }
+
         int newQty;
-        while (true) {
-            String qtyStr = JOptionPane.showInputDialog("Enter new quantity:", selectedProduct.getQuantity());
-            if (qtyStr == null) return;
-            try {
-                newQty = Integer.parseInt(qtyStr);
-                if (newQty < 0) throw new NumberFormatException();
-                break;
-            } catch (NumberFormatException e) {
-                JOptionPane.showMessageDialog(null, "Invalid quantity.");
-            }
-        }
-
-        // 7. Ask for new price
         double newPrice;
-        while (true) {
-            String priceStr = JOptionPane.showInputDialog("Enter new price:", selectedProduct.getPrice());
-            if (priceStr == null) return;
-            try {
-                newPrice = Double.parseDouble(priceStr);
-                if (newPrice < 0) throw new NumberFormatException();
-                break;
-            } catch (NumberFormatException e) {
-                JOptionPane.showMessageDialog(null, "Invalid price.");
+
+        try {
+            newQty = Integer.parseInt(quantityStr);
+            if (newQty < 0) {
+                JOptionPane.showMessageDialog(null, "Quantity cannot be negative.");
+                return;
             }
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(null, "Invalid quantity format.");
+            return;
         }
 
-        // 8. Update and save product
+        try {
+            newPrice = Double.parseDouble(priceStr);
+            if (newPrice < 0) {
+                JOptionPane.showMessageDialog(null, "Price cannot be negative.");
+                return;
+            }
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(null, "Invalid price format.");
+            return;
+        }
+
+        // Update product
         selectedProduct.setName(newName);
         selectedProduct.setQuantity(newQty);
         selectedProduct.setPrice(newPrice);
@@ -164,6 +183,7 @@ public class ProductGUI {
 
         JOptionPane.showMessageDialog(null, "Product updated successfully.");
     }
+
 
     // Method to delete a product via scrollable dropdown
     public void deleteProductWithGUI() {
