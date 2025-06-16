@@ -1,3 +1,4 @@
+import com.formdev.flatlaf.FlatLightLaf;
 import javax.swing.*;
 
 public class Main {
@@ -5,6 +6,12 @@ public class Main {
     public static void main(String[] args) {
 
         ProductGUI productGUI = new ProductGUI();
+
+        try {
+            UIManager.setLookAndFeel(new FlatLightLaf());
+        } catch (Exception e) {
+            System.err.println("Failed to initialize FlatLaf.");
+        }
 
         // Menu options for the user to choose from
         String[] options = {"Add product", "Show all products", "Update product", "Delete product", "Search product", "Check low stock", "Total cost"};

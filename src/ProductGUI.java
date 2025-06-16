@@ -1,4 +1,5 @@
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.util.ArrayList;
 import java.util.List;
 import java.text.DecimalFormat;
@@ -76,22 +77,41 @@ public class ProductGUI {
             return;
         }
 
-        // Build string with product information
-        StringBuilder sb = new StringBuilder("Product List:\n\n");
+        // Define column names for the table
+        String[] columns = {"ID", "Name", "Quantity", "Price"};
+
+        // Create a table model and set column names
+        DefaultTableModel tableModel = new DefaultTableModel(columns, 0);
+
+        // Formatter for price to show 2 decimals
+        DecimalFormat df = new DecimalFormat("0.00");
+
+        // Add rows from product list to table model
         for (Product product : productList) {
-            sb.append(product.toString()).append("\n");
+            Object[] row = {
+                    product.getId(),
+                    product.getName(),
+                    product.getQuantity(),
+                    "$" + df.format(product.getPrice())
+            };
+            tableModel.addRow(row);
         }
 
-        // Display products in a JTextArea inside a scroll pane
-        JTextArea textArea = new JTextArea(sb.toString());
-        textArea.setEditable(false);
-        textArea.setFont(new java.awt.Font("Arial", java.awt.Font.PLAIN, 15));
-        JScrollPane scrollPane = new JScrollPane(textArea);
-        scrollPane.setPreferredSize(new java.awt.Dimension(400, 300));
+        // Create JTable with model
+        JTable table = new JTable(tableModel);
+        table.setEnabled(false); // disable editing
 
+        // Optional: set font and row height for better look
+        table.setFont(new java.awt.Font("Arial", java.awt.Font.PLAIN, 14));
+        table.setRowHeight(22);
+
+        // Wrap in scroll pane with preferred size
+        JScrollPane scrollPane = new JScrollPane(table);
+        scrollPane.setPreferredSize(new java.awt.Dimension(450, 300));
+
+        // Show in dialog
         JOptionPane.showMessageDialog(null, scrollPane, "All Products", JOptionPane.INFORMATION_MESSAGE);
     }
-
     // Method to update a product via scrollable dropdown
     public void updateProductWithGUI() {
         DatabaseManager databaseManager = new DatabaseManager();
